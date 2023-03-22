@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<script src="/app2.js"></script>
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+		/>
+		<link rel="icon" type="image/x-icon" href="/img/Schermafbeelding 2023-02-17 142322.webp">
+		<title>Lloyd's portfolio</title>
+	</head>
+	<body>
+		<header id="header" class="header-close">
+			<img
+				src="/img/Schermafbeelding 2023-02-17 142322.webp"
+				alt="profiel img"
+				id="header-img"
+			/>
+			<h1 id="totaal">Lloyd's portfolio</h1>
+			<ul id="li-header">
+				<li>
+					<a href="/logout.html"
+						><button class="header-button">
+							Logout
+						</button></a
+					>
+				</li>
+				<li>
+					<button
+						class="header-button"
+						id="header-add-button"
+					>
+						Nieuw
+					</button>
+				</li>
+				<li>
+					<button
+						class="header-button"
+						id="header-update-button"
+					>
+						Update
+					</button>
+				</li>
+			</ul>
+		</header>
+
+		<main>
+			<div id="drk-bg"></div>
+			<ul id="cards">
+				<!-- The list items worden automatisch gegenereerd -->
+			</ul>
+			<form
+				id="add-form"
+				class="not-visible"
+				style="opacity: 0"
+			>
+				<div class="form-container">
+					<button id="close-add-form">X</button>
+					<h3>Voeg nieuwe crypto toe</h3>
+					<input
+						type="text"
+						class="form-control"
+						id="crypto-amount"
+						name="crypto-amount"
+						placeholder="Aantal in bezit"
+					/>
+					<input
+						type="text"
+						class="form-control"
+						id="crypto-name"
+						name="crypto-name"
+						placeholder="Naam crypto"
+					/>
+					<button
+						type="submit"
+						class="form-control"
+					>
+						Voeg toe
+					</button>
+				</div>
+			</form>
+
+			<form
+				id="update-form"
+				class="not-visible"
+				style="opacity: 0"
+			>
+				<div class="form-container">
+					<button id="close-update-form">
+						X
+					</button>
+					<h3>update crypto</h3>
+					<input
+						type="text"
+						class="form-control"
+						id="update-crypto-amount"
+						name="crypto-amount"
+						placeholder="Aantal in bezit"
+					/>
+					<input
+						type="text"
+						class="form-control"
+						id="update-crypto-name"
+						name="crypto-name"
+						placeholder="Naam crypto"
+					/>
+					<button
+						type="submit"
+						class="form-control"
+					>
+						Update
+					</button>
+				</div>
+			</form>
+			<script src="/forms.js"></script>
+		</main>
+	</body>
+</html>
+
+<style>
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	body {
+		position: relative;
+		min-height: 100vh;
+		background-image: linear-gradient(
+			0deg,
+			#ffdee9 0%,
+			#b5fffc 100%
+		);
+		overflow-x: hidden;
+	}
+
+	main {
+		margin: 2% 0;
+	}
+
+	.drk-bg {
+		width: 100vw;
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-color: black;
+		z-index: 2;
+		opacity: 0.7;
+	}
+
+	@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&family=Roboto:ital,wght@0,300;0,400;1,300;1,400&display=swap");
+
+	h1 {
+		text-align: center;
+		font-family: "Raleway", sans-serif;
+		font-weight: 400;
+		font-size: 36px;
+		line-height: 43px;
+	}
+
+	p,
+	a {
+		text-align: center;
+		font-family: "Roboto", sans-serif;
+		font-weight: 400;
+		font-size: 18px;
+		line-height: 29px;
+	}
+
+	img {
+		width: 70px;
+		margin-bottom: 20px;
+	}
+
+	header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background-color: #fff;
+		padding: 0 50px;
+		box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+			rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+			rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+	}
+
+	header img {
+		width: 70px;
+		border-radius: 100%;
+		align-self: center;
+		margin-top: 10px;
+	}
+
+	header ul {
+		display: flex;
+		/* flex-direction: column; */
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+		gap: 30px;
+	}
+
+	#header li {
+		list-style: none;
+	}
+	#header li a {
+		text-decoration: none;
+		color: #1d1d1d;
+	}
+
+	ul#cards {
+		display: flex;
+		/* flex-direction: column; */
+		width: 100%;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		padding: 20px 0;
+		gap: 50px;
+	}
+
+	li.card {
+		position: relative;
+		border-radius: 15px;
+		padding: 20px;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 550px;
+		box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+			rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+			rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+		height: 300px;
+		background-color: #fff;
+	}
+
+	button.card-button,
+	button.header-button {
+		bottom: 10px;
+		right: 10px;
+		border: 1px solid #1d1d1d;
+		border-bottom: 3px solid #1d1d1d;
+		background-color: #fff;
+		color: red;
+		border-radius: 8px;
+	}
+
+	button.card-button {
+		position: absolute;
+		padding: 3px 15px;
+	}
+
+	button.card-button:hover {
+		border-bottom: 1px solid #1d1d1d;
+	}
+
+	button.header-button {
+		width: 80px;
+		height: 40px;
+		font-family: "Roboto", sans-serif;
+		line-height: 15px;
+	}
+	.lijn {
+		height: 1px;
+		width: 100px;
+		background-color: #1d1d1d;
+		margin: 10px 0;
+	}
+
+	form {
+		position: relative;
+		z-index: 3;
+	}
+	.form-container {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: #fff;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 550px;
+		margin: 0 auto;
+		box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+			rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+			rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+		padding: 60px 20px;
+		border-radius: 15px;
+	}
+
+	button#close-add-form,
+	button#close-update-form {
+		position: absolute;
+		display: flex;
+		width: 40px !important;
+		height: 40px !important;
+		top: 0;
+		right: 10px;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.form-control {
+		width: 100%;
+	}
+
+	input {
+		margin-bottom: 10px;
+		padding: 15px 0;
+		width: 100%;
+		border: none;
+		border-bottom: 1px solid #1d1d1d;
+	}
+
+	input:focus,
+	input:focus {
+		outline: none;
+	}
+
+	.form-container button {
+		background-color: #1d1d1d;
+		color: #fff;
+		border: none;
+		padding: 20px 0;
+		width: 100%;
+		border-radius: 8px;
+		margin-top: 20px;
+	}
+
+	#update-form {
+		margin-top: 50px;
+	}
+
+	.not-visible {
+		opacity: 0;
+		pointer-events: none;
+		transition: all 1s;
+	}
+
+	.visible {
+		opacity: 1;
+		pointer-events: auto;
+		transition: all 1s;
+	}
+
+
+	@media screen and (max-width: 600px) {
+		body {
+			width: 100vw;
+			/* padding: 30px 20px 0 20px; */
+		}
+
+		p {
+			text-align: center;
+			font-family: "Roboto", sans-serif;
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 24px;
+		}
+
+		#header {
+			display: flex;
+			flex-direction: column-reverse;
+			width: 100%;
+			align-items: center;
+			justify-content: baseline;
+		}
+
+		.header-close {
+			margin-top: -60px;
+			transition: margin-top 1s;
+		}
+		.header-open {
+			margin-top: 0;
+			transition: margin-top 1s;
+		}
+
+		#header img {
+			width: 60px;
+		}
+
+		#header h1 {
+			text-align: center;
+			font-family: "Raleway", sans-serif;
+			font-weight: 400;
+			font-size: 24px;
+			line-height: 30px;
+		}
+
+		main {
+			margin: 2% 20px;
+		}
+
+		form {
+			padding: 24px;
+		}
+		.form-container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 90%;
+			margin: 0 auto;
+			box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+			padding: 60px 20px;
+			z-index: 5;
+		}
+
+		#header ul {
+			display: flex;
+			width: 0;
+			flex-wrap: nowrap;
+			align-items: center;
+			justify-content: center;
+			padding: 0;
+			gap: 20px;
+			margin: 20px 0;
+		}
+
+		ul#cards {
+			display: flex;
+			/* flex-direction: column; */
+			width: 100%;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: center;
+			padding: 20px 0;
+			gap: 20px;
+		}
+
+		li.card {
+			position: relative;
+			border-radius: 15px;
+			padding: 20px;
+			list-style: none;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+				rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+				rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+			height: 300px;
+			background-color: #fff;
+		}
+	}
+</style>

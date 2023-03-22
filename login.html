@@ -1,0 +1,317 @@
+<html>
+	<head>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1"></script>
+		<!-- <link rel="stylesheet" type="text/css" href="./index.css"> -->
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="form">
+				<a href="/index.html"><img src="/img/Schermafbeelding 2023-02-17 142322.webp" alt=""></a>	
+				<form id="log-in">
+					<h3>Log In</h3>
+					<label>Email</label
+					><input type="email" name="email" />
+					<label>Password</label
+					><input
+						type="password"
+						name="password"
+					/>
+					<button type="submit" />login </button>
+				</form>
+			</div>
+
+			<!-- <div class="form">
+				<h3>Logout</h3>
+				<button id="logout-button">Logout</button>
+			</div> -->
+			<div class="invis">
+			<div class="form">
+				<form id="sign-up">
+					<h3>Sign Up</h3>
+					<label>Email</label
+					><input type="email" name="email" />
+					<label>Password</label
+					><input
+						type="password"
+						name="password"
+					/>
+					<input type="submit" />
+				</form>
+			</div>
+		
+		
+			<div class="section">
+				<form id="validate">
+					<h3>Access Token</h3>
+					<input
+						readonly="readonly"
+						type="text"
+						id="access-token"
+					/>
+					<small
+						>Default expiry is 60
+						minutes</small
+					>
+					<h3>Refresh Token</h3>
+					<input
+						readonly="readonly"
+						type="text"
+						id="refresh-token"
+					/>
+					<small
+						>Supabase-js will use this to
+						automatically fetch a new
+						accessToken for you every 60
+						mins whilst the client is
+						running</small
+					>
+				</form>
+			</div>
+			<div class="form">
+				<h3>Fetch User Details</h3>
+				<button id="user-button">Fetch</button>
+			</div>
+		</div>
+			
+		</div>
+
+		<script>
+			const Url = "https://rxxihkqzafitmcayuokl.supabase.co";
+			const Key =
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4eGloa3F6YWZpdG1jYXl1b2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU5NzI2OTcsImV4cCI6MTk5MTU0ODY5N30.iKPHlGh27Ku0t3rhDsDp6t9wJsEcJ0O7hSaSkWEyVYg";
+			const database = supabase.createClient(Url, Key);
+			window.userToken = null;
+
+			function getLocalstorage() {}
+
+			getLocalstorage();
+
+			document.addEventListener(
+				"DOMContentLoaded",
+				function (event) {
+					var signUpForm =
+						document.querySelector(
+							"#sign-up"
+						);
+					signUpForm.onsubmit =
+						signUpSubmitted.bind(
+							signUpForm
+						);
+
+					var logInForm =
+						document.querySelector(
+							"#log-in"
+						);
+					logInForm.onsubmit =
+						logInSubmitted.bind(logInForm);
+
+					var userDetailsButton =
+						document.querySelector(
+							"#user-button"
+						);
+					userDetailsButton.onclick =
+						fetchUserDetails.bind(
+							userDetailsButton
+						);
+
+					var logoutButton =
+						document.querySelector(
+							"#logout-button"
+						);
+					logoutButton.onclick =
+						logoutSubmitted.bind(
+							logoutButton
+						);
+				}
+			);
+
+			// console.log(database.auth)
+
+			const signUpSubmitted = (event) => {
+				event.preventDefault();
+				const email = event.target[0].value;
+				const password = event.target[1].value;
+
+				database.auth
+					.signUp({ email, password })
+					.then((response) => {
+						response.error
+							? alert(
+									response
+										.error
+										.message
+							  )
+							: setToken(response);
+					})
+					.catch((err) => {
+						alert(err);
+					});
+			};
+
+			const logInSubmitted = (event) => {
+				event.preventDefault();
+				const email = event.target[0].value;
+				const password = event.target[1].value;
+
+				database.auth
+					.signIn({ email, password })
+					.then((response) => {
+						response.error
+							? alert(
+									response
+										.error
+										.message
+							  )
+							: setToken(response);
+						if (
+							database.auth
+								.currentUser
+								.id ===
+							"cdd42fe5-e547-4e10-929d-1e257c440d90"
+						) {
+							location.href =
+								"/index.html";
+						}
+						else if (
+							database.auth
+								.currentUser
+								.id === null
+						) {
+							console.log(
+								"you have no persission"
+							);
+						}
+						console.log(getLocal);
+					})
+					.catch((err) => {
+						alert(err.response.text);
+					});
+			};
+
+			const fetchUserDetails = () => {
+				alert(JSON.stringify(database.auth.user()));
+			};
+
+			const logoutSubmitted = (event) => {
+				event.preventDefault();
+
+				database.auth
+					.signOut()
+					.then((_response) => {
+						document.querySelector(
+							"#access-token"
+						).value = "";
+						document.querySelector(
+							"#refresh-token"
+						).value = "";
+						alert("Logout successful");
+					})
+					.catch((err) => {
+						alert(err.response.text);
+					});
+			};
+
+			function setToken(response) {
+				if (
+					response.user.confirmation_sent_at &&
+					!response?.session?.access_token
+				) {
+					alert("Confirmation Email Sent");
+				} else {
+					document.querySelector(
+						"#access-token"
+					).value = response.session.access_token;
+					document.querySelector(
+						"#refresh-token"
+					).value =
+						response.session.refresh_token;
+					alert(
+						"Logged in as " +
+							response.user.email
+					);
+				}
+			}
+		</script>
+	</body>
+</html>
+
+<style>
+	@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&family=Roboto:ital,wght@0,300;0,400;1,300;1,400&display=swap");
+	.container{
+		width: 100vw;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+	}
+	.form{
+		display: flex;
+		flex-direction: column;
+		box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+			rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+			rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+		padding: 20px;
+		width: 30%;
+		margin: 50px 0;
+		font-family: "Roboto", sans-serif;
+		align-items: center;
+		text-align: center;
+	}
+
+	.form img{
+		width: 90px;
+		border-radius: 50%;
+	}
+
+	form{
+		display: flex;
+		flex-direction: column;
+	}
+
+
+	label {
+		margin: 0.5em;
+	}
+
+	input{
+		padding: 10px 8px;
+		border-radius: 8px;
+		border-width: 1px;
+		margin-bottom: 10px;
+	}
+
+	.section {
+		margin: 1em;
+	}
+	.container button{
+		background-color: #1d1d1d;
+		color: #fff;
+		border: none;
+		padding: 20px 0;
+		/* width: 30%; */
+		border-radius: 8px;
+		margin-top: 20px;
+	}
+	.invis{
+		display: none;
+	}
+
+	@media screen and (max-width: 600px) {
+		.form{
+		display: flex;
+		flex-direction: column;
+
+		width: 70%;
+		margin: 50px 0;
+	}
+
+	}
+
+</style>
